@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto de Texto con Rancho</title>
+    <link href="https://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin: auto;
+        }
+        .ingresar-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #8B4513;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+        .ingresar-btn:hover {
+            background-color: #A0522D;
+        }
+        h1 {
+            font-family: 'Rancho', cursive;
+            font-size: 3rem;
+            color: #8B4513;
+        }
+        p.description {
+            color: #555;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px #43c6ac;
+        }
+        footer {
+            margin-top: 30px;
+            color: #8B4513;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="box">
+            <img src="empleoaunclick.jpeg" alt="Logo empleo a un click" class="logo">
+            <h1 class="font-effect-shadow-multiple">¡ empleo a un click !</h1>
+            <p class="description">Donde encontrarás el empleo de tus sueños.</p>
+            <a href="registro.html" class="ingresar-btn" aria-label="Ir a registro">Ingresar</a>
+            <a href="quienessomos.html" class="ingresar-btn" aria-label="Ir a quienes somos">Quienes somos</a>
+        </div>
+    </main>
+    <footer>
+        <p>Copyright © derechos reservados Karina y John</p>
+    </footer>
+</body>
+</html>
