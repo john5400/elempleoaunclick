@@ -93,14 +93,14 @@
         <h2 id="form-title">Iniciar Sesión</h2>
 
         <!-- Formulario de inicio de sesión -->
-        <form id="login-form">
+        <form id="login-form" method="POST" action="login.php">
             <div class="form-group">
                 <label for="login-email">Correo electrónico</label>
-                <input type="email" id="login-email" required>
+                <input type="email" name="email" id="login-email" required>
             </div>
             <div class="form-group">
                 <label for="login-password">Contraseña</label>
-                <input type="password" id="login-password" required>
+                <input type="password" name="password" id="login-password" required>
             </div>
             <div class="form-actions">
                 <button type="submit">Ingresar</button>
@@ -109,18 +109,18 @@
         </form>
 
         <!-- Formulario de registro -->
-        <form id="register-form" class="hidden">
+        <form id="register-form" class="hidden" method="POST" action="register.php">
             <div class="form-group">
                 <label for="register-name">Nombre completo</label>
-                <input type="text" id="register-name" required>
+                <input type="text" name="name" id="register-name" required>
             </div>
             <div class="form-group">
                 <label for="register-email">Correo electrónico</label>
-                <input type="email" id="register-email" required>
+                <input type="email" name="email" id="register-email" required>
             </div>
             <div class="form-group">
                 <label for="register-password">Contraseña</label>
-                <input type="password" id="register-password" required>
+                <input type="password" name="password" id="register-password" required>
             </div>
             <div class="form-actions">
                 <button type="submit">Registrarse</button>
