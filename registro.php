@@ -1,5 +1,3 @@
-<!DOCTYPE html><?php
-<!-- filepath: c:\Users\Usuario\Desktop\carpeta de empleo\registro.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
