@@ -1,141 +1,150 @@
-<?php
-session_start();
-include("conexion.php");
-
-// --- Registro ---
-if (isset($_POST['registrar'])) {
-    $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-    $sql = "INSERT INTO usuarios (nombre, email, password) VALUES ('$nombre','$email','$password')";
-    if ($conn->query($sql) === TRUE) {
-        $mensaje = "✅ Registro exitoso, ahora inicia sesión.";
-    } else {
-        $mensaje = "❌ Error: " . $conn->error;
-    }
-}
-
-// --- Login ---
-if (isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    $sql = "SELECT * FROM usuarios WHERE email='$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        $usuario = $result->fetch_assoc();
-        if (password_verify($password, $usuario['password'])) {
-            $_SESSION['usuario'] = $usuario['nombre'];
-            header("Location: panel.php");
-            exit();
-        } else {
-            $mensaje = "❌ Contraseña incorrecta.";
-        }
-    } else {
-        $mensaje = "❌ Usuario no encontrado.";
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>El Empleo a un Click - Acceso</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rancho&display=swap">
-  <style>
-    body {
-      font-family: 'Rancho', cursive;
-      background: linear-gradient(to right, #43cea2, #185a9d);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #fff;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-    }
-    h1 {
-      margin-bottom: 20px;
-      color: #185a9d;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: #185a9d;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      margin: 10px 0;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #43cea2;
-    }
-    .mensaje {
-      margin: 10px 0;
-      color: red;
-      font-weight: bold;
-    }
-    .toggle-link {
-      color: #185a9d;
-      cursor: pointer;
-      text-decoration: underline;
-      display: block;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso y Registro</title>
+    <link href="https://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e0d4c3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-container h2 {
+            font-family: 'Rancho', cursive;
+            font-size: 3rem;
+            color: #8B4513;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            background-color: #8B4513;
+            color: white;
+            font-family: 'Rancho', cursive;
+            font-size: 1.5rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-actions button:hover {
+            background-color: #A0522D;
+        }
+
+        .toggle-link {
+            display: block;
+            margin-top: 20px;
+            color: #8B4513;
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: 'Rancho', cursive;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>El Empleo a un Click</h1>
+    <div class="form-container">
+        <h2 id="form-title">Iniciar Sesión</h2>
 
-    <?php if (!empty($mensaje)) echo "<p class='mensaje'>$mensaje</p>"; ?>
+        <!-- Formulario de inicio de sesión -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Correo electrónico</label>
+                <input type="email" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Contraseña</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Ingresar</button>
+            </div>
+            <span class="toggle-link" onclick="toggleForms()">¿No tienes cuenta? Regístrate</span>
+        </form>
 
-    <!-- Formulario de Login -->
-    <form method="POST" id="loginForm">
-      <input type="email" name="email" placeholder="Correo electrónico" required><br>
-      <input type="password" name="password" placeholder="Contraseña" required><br>
-      <button type="submit" name="login">Ingresar</button>
-      <span class="toggle-link" onclick="mostrarRegistro()">¿No tienes cuenta? Regístrate</span>
-    </form>
+        <!-- Formulario de registro -->
+        <form id="register-form" class="hidden">
+            <div class="form-group">
+                <label for="register-name">Nombre completo</label>
+                <input type="text" id="register-name" required>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Correo electrónico</label>
+                <input type="email" id="register-email" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Contraseña</label>
+                <input type="password" id="register-password" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Registrarse</button>
+            </div>
+            <span class="toggle-link" onclick="toggleForms()">¿Ya tienes cuenta? Inicia sesión</span>
+        </form>
+    </div>
 
-    <!-- Formulario de Registro -->
-    <form method="POST" id="registerForm" style="display:none;">
-      <input type="text" name="nombre" placeholder="Nombre completo" required><br>
-      <input type="email" name="email" placeholder="Correo electrónico" required><br>
-      <input type="password" name="password" placeholder="Contraseña" required><br>
-      <button type="submit" name="registrar">Registrarse</button>
-      <span class="toggle-link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</span>
-    </form>
-  </div>
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const formTitle = document.getElementById('form-title');
 
-  <script>
-    function mostrarRegistro() {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("registerForm").style.display = "block";
-    }
-    function mostrarLogin() {
-      document.getElementById("registerForm").style.display = "none";
-      document.getElementById("loginForm").style.display = "block";
-    }
-  </script>
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                formTitle.textContent = 'Iniciar Sesión';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                formTitle.textContent = 'Registro de Usuario';
+            }
+        }
+    </script>
 </body>
 </html>
