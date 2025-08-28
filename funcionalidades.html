@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Funcionalidad del Proyecto</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #004aad, #00c6ff);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+    .slide {
+      max-width: 950px;
+      margin: 50px auto;
+      background: rgba(255,255,255,0.95);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      color: #004aad;
+      margin-bottom: 30px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    li {
+      padding: 18px;
+      border-radius: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    li:hover {
+      transform: scale(1.05);
+    }
+    li span {
+      font-size: 26px;
+      margin-right: 12px;
+    }
+    /* Colores diferentes para cada funcionalidad */
+    li:nth-child(1) { background: #ffebee; color: #c62828; }
+    li:nth-child(2) { background: #e8f5e9; color: #2e7d32; }
+    li:nth-child(3) { background: #e3f2fd; color: #1565c0; }
+    li:nth-child(4) { background: #fff3e0; color: #ef6c00; }
+    li:nth-child(5) { background: #f3e5f5; color: #6a1b9a; }
+    li:nth-child(6) { background: #ede7f6; color: #4527a0; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <h1>⚙️ Funcionalidad del Proyecto</h1>
+    <ul>
+      <li><span>👤</span> Registro de usuarios (candidatos y empresas).</li>
+      <li><span>💼</span> Publicación de vacantes laborales.</li>
+      <li><span>🔎</span> Búsqueda y filtrado de empleos.</li>
+      <li><span>✅</span> Postulación en un solo click.</li>
+      <li><span>🔔</span> Notificaciones sobre nuevas ofertas.</li>
+      <li><span>🛠️</span> Panel administrativo para gestión de usuarios y vacantes.</li>
+    </ul>
+  </div>
+</body>
+</html>
