@@ -1,3 +1,52 @@
+<?php
+session_start();
+include("conexion.php"); // tu archivo de conexión a la BD
+
+// Manejo del formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["action"]) && $_POST["action"] == "login") {
+        // LOGIN
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+
+        $sql = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+            if (password_verify($password, $user["password"])) {
+                $_SESSION["user"] = $user["name"];
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                $mensaje = "Contraseña incorrecta.";
+            }
+        } else {
+            $mensaje = "El usuario no existe.";
+        }
+
+    } elseif (isset($_POST["action"]) && $_POST["action"] == "register") {
+        // REGISTRO
+        $name = $_POST["name"];
+        $email = $_POST["email"];
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO usuarios (name, email, password) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sss", $name, $email, $password);
+
+        if ($stmt->execute()) {
+            $mensaje = "Registro exitoso. Ahora puedes iniciar sesión.";
+        } else {
+            $mensaje = "Error al registrar: " . $conn->error;
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +54,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingreso y Registro</title>
     <link href="https://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -25,72 +73,36 @@
             width: 100%;
             text-align: center;
         }
-        .form-container h2 {
-            font-family: 'Rancho', cursive;
-            font-size: 3rem;
-            color: #8B4513;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        .form-actions {
-            margin-top: 30px;
-        }
+        h2 { font-family: 'Rancho', cursive; font-size: 2rem; color: #8B4513; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { font-weight: bold; margin-bottom: 8px; display: block; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; }
         .form-actions button {
-            background-color: #8B4513;
-            color: white;
-            font-family: 'Rancho', cursive;
-            font-size: 1.5rem;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            background: #8B4513; color: white; padding: 12px 24px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1.2rem; transition: 0.3s;
         }
-        .form-actions button:hover {
-            background-color: #A0522D;
-        }
-        .toggle-link {
-            display: block;
-            margin-top: 20px;
-            color: #8B4513;
-            text-decoration: underline;
-            cursor: pointer;
-            font-family: 'Rancho', cursive;
-        }
-        .hidden {
-            display: none;
-        }
+        .form-actions button:hover { background: #A0522D; }
+        .toggle-link { margin-top: 20px; cursor: pointer; color: #8B4513; text-decoration: underline; }
+        .hidden { display: none; }
+        .mensaje { margin: 15px 0; color: red; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h2 id="form-title">Iniciar Sesión</h2>
+        
+        <?php if (!empty($mensaje)) echo "<p class='mensaje'>$mensaje</p>"; ?>
 
-        <!-- Formulario de inicio de sesión -->
-        <form id="login-form" method="POST" action="login.php" autocomplete="on">
+        <!-- LOGIN -->
+        <form id="login-form" method="POST" class="" autocomplete="on">
+            <input type="hidden" name="action" value="login">
             <div class="form-group">
-                <label for="login-email">Correo electrónico</label>
-                <input type="email" name="email" id="login-email" required autocomplete="username">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="login-password">Contraseña</label>
-                <input type="password" name="password" id="login-password" required autocomplete="current-password">
+                <label>Contraseña</label>
+                <input type="password" name="password" required>
             </div>
             <div class="form-actions">
                 <button type="submit">Ingresar</button>
@@ -98,19 +110,20 @@
             <span class="toggle-link" onclick="toggleForms()">¿No tienes cuenta? Regístrate</span>
         </form>
 
-        <!-- Formulario de registro -->
-        <form id="register-form" class="hidden" method="POST" action="register.php" autocomplete="on">
+        <!-- REGISTRO -->
+        <form id="register-form" method="POST" class="hidden" autocomplete="on">
+            <input type="hidden" name="action" value="register">
             <div class="form-group">
-                <label for="register-name">Nombre completo</label>
-                <input type="text" name="name" id="register-name" required autocomplete="name">
+                <label>Nombre completo</label>
+                <input type="text" name="name" required>
             </div>
             <div class="form-group">
-                <label for="register-email">Correo electrónico</label>
-                <input type="email" name="email" id="register-email" required autocomplete="email">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="register-password">Contraseña</label>
-                <input type="password" name="password" id="register-password" required autocomplete="new-password">
+                <label>Contraseña</label>
+                <input type="password" name="password" required>
             </div>
             <div class="form-actions">
                 <button type="submit">Registrarse</button>
@@ -121,19 +134,11 @@
 
     <script>
         function toggleForms() {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const formTitle = document.getElementById('form-title');
-
-            if (loginForm.classList.contains('hidden')) {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                formTitle.textContent = 'Iniciar Sesión';
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                formTitle.textContent = 'Registro de Usuario';
-            }
+            document.getElementById("login-form").classList.toggle("hidden");
+            document.getElementById("register-form").classList.toggle("hidden");
+            document.getElementById("form-title").textContent =
+                document.getElementById("login-form").classList.contains("hidden")
+                ? "Registro de Usuario" : "Iniciar Sesión";
         }
     </script>
 </body>
