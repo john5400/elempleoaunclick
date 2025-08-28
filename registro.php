@@ -1,145 +1,141 @@
 <?php
 session_start();
-include("conexion.php"); // tu archivo de conexión a la BD
+include("conexion.php");
 
-// Manejo del formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["action"]) && $_POST["action"] == "login") {
-        // LOGIN
-        $email = $_POST["email"];
-        $password = $_POST["password"];
+// --- Registro ---
+if (isset($_POST['registrar'])) {
+    $nombre = $_POST['nombre'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-        $sql = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $sql = "INSERT INTO usuarios (nombre, email, password) VALUES ('$nombre','$email','$password')";
+    if ($conn->query($sql) === TRUE) {
+        $mensaje = "✅ Registro exitoso, ahora inicia sesión.";
+    } else {
+        $mensaje = "❌ Error: " . $conn->error;
+    }
+}
 
-        if ($result->num_rows == 1) {
-            $user = $result->fetch_assoc();
-            if (password_verify($password, $user["password"])) {
-                $_SESSION["user"] = $user["name"];
-                header("Location: dashboard.php");
-                exit;
-            } else {
-                $mensaje = "Contraseña incorrecta.";
-            }
+// --- Login ---
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM usuarios WHERE email='$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $usuario = $result->fetch_assoc();
+        if (password_verify($password, $usuario['password'])) {
+            $_SESSION['usuario'] = $usuario['nombre'];
+            header("Location: panel.php");
+            exit();
         } else {
-            $mensaje = "El usuario no existe.";
+            $mensaje = "❌ Contraseña incorrecta.";
         }
-
-    } elseif (isset($_POST["action"]) && $_POST["action"] == "register") {
-        // REGISTRO
-        $name = $_POST["name"];
-        $email = $_POST["email"];
-        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
-        $sql = "INSERT INTO usuarios (name, email, password) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $name, $email, $password);
-
-        if ($stmt->execute()) {
-            $mensaje = "Registro exitoso. Ahora puedes iniciar sesión.";
-        } else {
-            $mensaje = "Error al registrar: " . $conn->error;
-        }
+    } else {
+        $mensaje = "❌ Usuario no encontrado.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingreso y Registro</title>
-    <link href="https://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f5f5f5, #e0d4c3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .form-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
-        h2 { font-family: 'Rancho', cursive; font-size: 2rem; color: #8B4513; margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { font-weight: bold; margin-bottom: 8px; display: block; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; }
-        .form-actions button {
-            background: #8B4513; color: white; padding: 12px 24px; border: none; border-radius: 8px;
-            cursor: pointer; font-size: 1.2rem; transition: 0.3s;
-        }
-        .form-actions button:hover { background: #A0522D; }
-        .toggle-link { margin-top: 20px; cursor: pointer; color: #8B4513; text-decoration: underline; }
-        .hidden { display: none; }
-        .mensaje { margin: 15px 0; color: red; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <title>El Empleo a un Click - Acceso</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rancho&display=swap">
+  <style>
+    body {
+      font-family: 'Rancho', cursive;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #185a9d;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #185a9d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #43cea2;
+    }
+    .mensaje {
+      margin: 10px 0;
+      color: red;
+      font-weight: bold;
+    }
+    .toggle-link {
+      color: #185a9d;
+      cursor: pointer;
+      text-decoration: underline;
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2 id="form-title">Iniciar Sesión</h2>
-        
-        <?php if (!empty($mensaje)) echo "<p class='mensaje'>$mensaje</p>"; ?>
+  <div class="container">
+    <h1>El Empleo a un Click</h1>
 
-        <!-- LOGIN -->
-        <form id="login-form" method="POST" class="" autocomplete="on">
-            <input type="hidden" name="action" value="login">
-            <div class="form-group">
-                <label>Correo electrónico</label>
-                <input type="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" name="password" required>
-            </div>
-            <div class="form-actions">
-                <button type="submit">Ingresar</button>
-            </div>
-            <span class="toggle-link" onclick="toggleForms()">¿No tienes cuenta? Regístrate</span>
-        </form>
+    <?php if (!empty($mensaje)) echo "<p class='mensaje'>$mensaje</p>"; ?>
 
-        <!-- REGISTRO -->
-        <form id="register-form" method="POST" class="hidden" autocomplete="on">
-            <input type="hidden" name="action" value="register">
-            <div class="form-group">
-                <label>Nombre completo</label>
-                <input type="text" name="name" required>
-            </div>
-            <div class="form-group">
-                <label>Correo electrónico</label>
-                <input type="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" name="password" required>
-            </div>
-            <div class="form-actions">
-                <button type="submit">Registrarse</button>
-            </div>
-            <span class="toggle-link" onclick="toggleForms()">¿Ya tienes cuenta? Inicia sesión</span>
-        </form>
-    </div>
+    <!-- Formulario de Login -->
+    <form method="POST" id="loginForm">
+      <input type="email" name="email" placeholder="Correo electrónico" required><br>
+      <input type="password" name="password" placeholder="Contraseña" required><br>
+      <button type="submit" name="login">Ingresar</button>
+      <span class="toggle-link" onclick="mostrarRegistro()">¿No tienes cuenta? Regístrate</span>
+    </form>
 
-    <script>
-        function toggleForms() {
-            document.getElementById("login-form").classList.toggle("hidden");
-            document.getElementById("register-form").classList.toggle("hidden");
-            document.getElementById("form-title").textContent =
-                document.getElementById("login-form").classList.contains("hidden")
-                ? "Registro de Usuario" : "Iniciar Sesión";
-        }
-    </script>
+    <!-- Formulario de Registro -->
+    <form method="POST" id="registerForm" style="display:none;">
+      <input type="text" name="nombre" placeholder="Nombre completo" required><br>
+      <input type="email" name="email" placeholder="Correo electrónico" required><br>
+      <input type="password" name="password" placeholder="Contraseña" required><br>
+      <button type="submit" name="registrar">Registrarse</button>
+      <span class="toggle-link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</span>
+    </form>
+  </div>
+
+  <script>
+    function mostrarRegistro() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("registerForm").style.display = "block";
+    }
+    function mostrarLogin() {
+      document.getElementById("registerForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    }
+  </script>
 </body>
 </html>
