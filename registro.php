@@ -1,3 +1,5 @@
+<!DOCTYPE html><?php
+<!-- filepath: c:\Users\Usuario\Desktop\carpeta de empleo\registro.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +18,6 @@
             min-height: 100vh;
             margin: 0;
         }
-
         .form-container {
             background-color: white;
             padding: 40px;
@@ -26,26 +27,22 @@
             width: 100%;
             text-align: center;
         }
-
         .form-container h2 {
             font-family: 'Rancho', cursive;
             font-size: 3rem;
             color: #8B4513;
             margin-bottom: 20px;
         }
-
         .form-group {
             margin-bottom: 20px;
             text-align: left;
         }
-
         .form-group label {
             display: block;
             font-weight: bold;
             margin-bottom: 8px;
             color: #555;
         }
-
         .form-group input {
             width: 100%;
             padding: 12px;
@@ -53,11 +50,9 @@
             border-radius: 8px;
             font-size: 1rem;
         }
-
         .form-actions {
             margin-top: 30px;
         }
-
         .form-actions button {
             background-color: #8B4513;
             color: white;
@@ -69,11 +64,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .form-actions button:hover {
             background-color: #A0522D;
         }
-
         .toggle-link {
             display: block;
             margin-top: 20px;
@@ -82,7 +75,6 @@
             cursor: pointer;
             font-family: 'Rancho', cursive;
         }
-
         .hidden {
             display: none;
         }
@@ -93,14 +85,14 @@
         <h2 id="form-title">Iniciar Sesión</h2>
 
         <!-- Formulario de inicio de sesión -->
-        <form id="login-form" method="POST" action="login.php">
+        <form id="login-form" method="POST" action="login.php" autocomplete="on">
             <div class="form-group">
                 <label for="login-email">Correo electrónico</label>
-                <input type="email" name="email" id="login-email" required>
+                <input type="email" name="email" id="login-email" required autocomplete="username">
             </div>
             <div class="form-group">
                 <label for="login-password">Contraseña</label>
-                <input type="password" name="password" id="login-password" required>
+                <input type="password" name="password" id="login-password" required autocomplete="current-password">
             </div>
             <div class="form-actions">
                 <button type="submit">Ingresar</button>
@@ -109,18 +101,18 @@
         </form>
 
         <!-- Formulario de registro -->
-        <form id="register-form" class="hidden" method="POST" action="register.php">
+        <form id="register-form" class="hidden" method="POST" action="register.php" autocomplete="on">
             <div class="form-group">
                 <label for="register-name">Nombre completo</label>
-                <input type="text" name="name" id="register-name" required>
+                <input type="text" name="name" id="register-name" required autocomplete="name">
             </div>
             <div class="form-group">
                 <label for="register-email">Correo electrónico</label>
-                <input type="email" name="email" id="register-email" required>
+                <input type="email" name="email" id="register-email" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="register-password">Contraseña</label>
-                <input type="password" name="password" id="register-password" required>
+                <input type="password" name="password" id="register-password" required autocomplete="new-password">
             </div>
             <div class="form-actions">
                 <button type="submit">Registrarse</button>
