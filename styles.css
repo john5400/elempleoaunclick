@@ -1,0 +1,61 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.font-effect-shadow-multiple {
+    font-family: 'Rancho', cursive;
+    font-size: 4rem;
+    color: #8B4513;
+    margin: 20px 0;
+}
+
+.normal-text {
+    font-family: 'Rancho', cursive;
+    font-size: 2rem;
+    color: #333;
+    margin: 20px 0;
+}
+
+.description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+.ingresar-btn {
+    display: inline-block;
+    background-color: #8B4513;
+    color: white;
+    font-family: 'Rancho', cursive;
+    font-size: 1.8rem;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+
+.ingresar-btn:hover {
+    background-color: #A0522D;
+}
